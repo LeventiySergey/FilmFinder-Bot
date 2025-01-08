@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "dev": "deno run --watch bot.ts",
+    "start": "deno --env-file=.env -A bot.ts"
+  },
+  "imports": {
+  }
+}
