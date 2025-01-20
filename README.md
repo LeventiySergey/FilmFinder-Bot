@@ -22,9 +22,10 @@ To get started with FilmFinder Bot, follow these steps:
     Ensure you have Deno installed. You can download it from [deno.land](https://deno.land/).
 
 3. **Set up environment variables**:
-    Create a `.env` file in the root directory and add your Telegram bot token:
+    Create a `.env` file in the root directory and add your Telegram bot token and OpenAI API key:
     ```
     BOT_TOKEN=your_telegram_bot_token
+    OPENAI_API_KEY=your_openai_api_key
     ```
 
 4. **Run the bot using `deno.json`**:
