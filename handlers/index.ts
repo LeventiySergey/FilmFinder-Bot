@@ -10,15 +10,38 @@ import { byActorsHandler, handleActorsInput } from "./byActors.ts";
 import { byGenresHandler, handleGenresInput } from "./byGenres.ts";
 
 function setupHandlers(bot: Bot<MyContext>) {
-  bot.hears("🎥 Search Movies", searchMoviesHandler);
-  bot.hears("🌟 Recommendations", recommendationsHandler);
-  bot.hears("⭐ Favorites", favoritesHandler);
-  bot.hears("ℹ️ About Bot", aboutBotHandler);
-  bot.hears("🔙 Back", goBackHandler);
-  bot.hears("📝 By Text Description", byDescriptionHandler);
-  bot.hears("🎬 By Genres", byGenresHandler);
-  bot.hears("🎭 By Actors", byActorsHandler);
-
+  bot.hears("🎥 Search Movies", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected Search Movies`);
+    searchMoviesHandler(ctx);
+  });
+  bot.hears("🌟 Recommendations", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected Recommendations`);
+    recommendationsHandler(ctx);
+  });
+  bot.hears("⭐ Favorites", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected Favorites`);
+    favoritesHandler(ctx);
+  });
+  bot.hears("ℹ️ About Bot", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected About Bot`);
+    aboutBotHandler(ctx);
+  });
+  bot.hears("🔙 Back", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected Back`);
+    goBackHandler(ctx);
+  });
+  bot.hears("📝 By Text Description", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected By Text Description`);
+    byDescriptionHandler(ctx);
+  });
+  bot.hears("🎬 By Genres", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected By Genres`);
+    byGenresHandler(ctx);
+  });
+  bot.hears("🎭 By Actors", (ctx) => {
+    console.log(`User ${ctx.from?.username || ctx.from?.id} selected By Actors`);
+    byActorsHandler(ctx);
+  });
 
   bot.on("message:text", async (ctx, next) => {
     if (ctx.session.waitingForDescription) {
