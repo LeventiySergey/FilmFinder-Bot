@@ -15,9 +15,17 @@ bot.use(session({
 
 
 bot.command("start", async (ctx) => {
+  console.log(`User ${ctx.from?.username || ctx.from?.id} started the bot`);
   await ctx.reply("Welcome! Choose an action:", {
     reply_markup: { keyboard: mainKeyboard.build(), resize_keyboard: true },
   });
+});
+
+bot.callbackQuery(/^movie_[\w•']+$/, async (ctx) => {
+  const movieName = ctx.match[0].split("_")[1].replace(/•/g, " ");
+  console.log(`User ${ctx.from?.username || ctx.from?.id} selected movie: ${movieName}`);
+  await ctx.answerCallbackQuery();
+  await ctx.reply(`You selected movie "${movieName}"`);
 });
 
 setupHandlers(bot);
