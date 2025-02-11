@@ -30,7 +30,7 @@ async function handleDescriptionInput(ctx: MyContext) {
     try {
       // Получение ответа от GPT
       const gptResponse = (await getGPTResponse(
-        `You have to provide movies list (just titles, in json format but without '''json, example - '{
+        `You have to provide movies (not series) list (just english titles, in json format but without '''json, example - '{
           "1": "Fight Club",
           "2": "Seven",
           "3": "Inglourious Basterds",
@@ -52,8 +52,8 @@ async function handleDescriptionInput(ctx: MyContext) {
         const keyboard = new InlineKeyboard();
 
         movieTitles.forEach((title) => {
-          const titleWithoutSpaces = title.replace(/\s/g, '•');
-          keyboard.text(title, `movie_${titleWithoutSpaces}`).row();
+          const encodedTitle = encodeURIComponent(title);
+          keyboard.text(title, `movie_${encodedTitle}`).row();
         });
 
         // Отправка сообщения с клавиатурой

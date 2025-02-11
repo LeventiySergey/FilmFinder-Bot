@@ -28,7 +28,7 @@ async function handleActorsInput(ctx: MyContext) {
     try {
       // Get response from GPT
       const gptResponse = await getGPTResponse(`Input text: '${userMessage}'.
-        If the movie text contains actors names (even with mistakes), you have to provide movies list (just titles, in json format but without '''json, example - '{
+        If the movie text contains actors names (even with mistakes), you have to provide movies (not series) list (just english titles, in json format but without '''json, example - '{
     "1": "Fight Club",
     "2": "Seven",
     "3": "Inglourious Basterds",
@@ -46,8 +46,8 @@ async function handleActorsInput(ctx: MyContext) {
         const keyboard = new InlineKeyboard();
 
         movieTitles.forEach((title) => {
-          const titleWithoutSpaces = title.replace(/\s/g, '•');
-          keyboard.text(title, `movie_${titleWithoutSpaces}`).row();
+          const encodedTitle = encodeURIComponent(title);
+          keyboard.text(title, `movie_${encodedTitle}`).row();
         });
 
         // Send message with keyboard
