@@ -10,6 +10,8 @@ interface GPTMoviesResponse {
 // Хэндлер для начала взаимодействия
 async function byDescriptionHandler(ctx: MyContext) {
   ctx.session.waitingForDescription = true;
+  ctx.session.waitingForGenres = false;
+  ctx.session.waitingForActors = false;
   await ctx.reply(
     "Please provide the movie description (example - Funny, sad and lifechanging, etc.):"
   );

@@ -10,6 +10,8 @@ interface GPTMoviesResponse {
 // Handler to start interaction
 async function byGenresHandler(ctx: MyContext) {
   ctx.session.waitingForGenres = true;
+  ctx.session.waitingForDescription = false;
+  ctx.session.waitingForActors = false;
   await ctx.reply("Please provide genres (example - drama, comedy, etc.):");
 }
 

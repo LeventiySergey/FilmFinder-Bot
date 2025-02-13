@@ -10,6 +10,8 @@ interface GPTMoviesResponse {
 // Handler to start interaction
 async function byActorsHandler(ctx: MyContext) {
   ctx.session.waitingForActors = true;
+  ctx.session.waitingForGenres = false;
+  ctx.session.waitingForDescription = false;
   await ctx.reply("Please provide names of actors (example - Tom Hanks, Brad Pitt, etc.):");
 }
 
