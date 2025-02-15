@@ -1,6 +1,18 @@
 import { MyContext } from "../types.ts";
 import { getMovieDetailsById } from "../api/tmdbApi.ts";
 
+function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  const truncated = text.substring(0, maxLength);
+  const lastSpaceIndex = truncated.lastIndexOf(" ");
+  if (lastSpaceIndex === -1) {
+    return truncated + "...";
+  }
+  return truncated.substring(0, lastSpaceIndex) + "...";
+}
+
 async function moreHandler(ctx: MyContext) {
   const movieId = ctx.match ? ctx.match[0].split("_")[1] : null;
   if (!movieId) {
@@ -14,7 +26,7 @@ async function moreHandler(ctx: MyContext) {
   try {
     const movieDetails = await getMovieDetailsById(movieId);
     const budget = movieDetails.budget ? `$${movieDetails.budget.toLocaleString()}` : "Budget not available";
-    const description = movieDetails.overview || "Description not available";
+    const description = movieDetails.overview ? truncateText(movieDetails.overview, 500) : "Description not available";
     interface CrewMember {
       job: string;
       name: string;
@@ -48,4 +60,4 @@ async function moreHandler(ctx: MyContext) {
   }
 }
 
-export { moreHandler };
+export { moreHandler, truncateText };

@@ -7,6 +7,11 @@ interface GPTMoviesResponse {
   [key: string]: string;
 }
 
+// New truncate function
+function truncateTextExact(text: string, maxLength: number): string {
+  return text.length > maxLength ? text.substring(0, maxLength) + "…" : text;
+}
+
 // Хэндлер для начала взаимодействия
 async function byDescriptionHandler(ctx: MyContext) {
   ctx.session.waitingForDescription = true;
@@ -54,8 +59,9 @@ async function handleDescriptionInput(ctx: MyContext) {
         const keyboard = new InlineKeyboard();
 
         movieTitles.forEach((title) => {
-          const encodedTitle = encodeURIComponent(title);
-          keyboard.text(title, `movie_${encodedTitle}`).row();
+          const truncatedTitle = truncateTextExact(title, 30); // Use new truncate function
+          const encodedTitle = encodeURIComponent(truncatedTitle);
+          keyboard.text(truncatedTitle, `movie_${encodedTitle}`).row();
         });
 
         // Отправка сообщения с клавиатурой

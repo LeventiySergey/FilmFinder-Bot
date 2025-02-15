@@ -14,7 +14,7 @@ async function findSimilarHandler(ctx: MyContext) {
     return;
   }
   const movieName = ctx.match[0].split("_")[1];
-  await ctx.reply(`Finding a movie similar to "${decodeURIComponent(movieName)}"...`);
+  await ctx.reply(`⏳ Finding a movie similar to "${decodeURIComponent(movieName)}"`);
 
   await ctx.answerCallbackQuery();
   await new Promise(resolve => setTimeout(resolve, 500)); // Add a 500 ms delay
