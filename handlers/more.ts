@@ -1,5 +1,6 @@
 import { MyContext } from "../types.ts";
-import { getMovieDetailsById } from "../api/tmdbApi.ts";
+import { getMovieDetails, getMovieDetailsById } from "../api/tmdbApi.ts";
+import {truncateTextExact} from "./byDescription.ts";
 
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) {
@@ -19,14 +20,15 @@ async function moreHandler(ctx: MyContext) {
     console.error("Movie ID not found in the callback query.");
     return;
   }
-  console.log(`User ${ctx.from?.username || ctx.from?.id} requested more details for movie ID: ${movieId}`);
   await ctx.answerCallbackQuery();
   await new Promise(resolve => setTimeout(resolve, 500)); // Add a 500 ms delay
 
   try {
     const movieDetails = await getMovieDetailsById(movieId);
+    console.log(`User ${ctx.from?.username || ctx.from?.id} requested more details for movie: ${movieDetails.title}`);
     const budget = movieDetails.budget ? `$${movieDetails.budget.toLocaleString()}` : "Budget not available";
     const description = movieDetails.overview ? truncateText(movieDetails.overview, 500) : "Description not available";
+    const truncatedTitle = truncateTextExact(movieDetails.title, 30); // Use new truncate function
     interface CrewMember {
       job: string;
       name: string;
@@ -41,7 +43,7 @@ async function moreHandler(ctx: MyContext) {
 
     const inlineKeyboard = {
       inline_keyboard: [
-        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(movieDetails.title)}` }]
+        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }]
       ],
     };
 

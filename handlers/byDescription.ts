@@ -77,4 +77,4 @@ async function handleDescriptionInput(ctx: MyContext) {
 }
 
 // Экспортируем хэндлеры
-export { byDescriptionHandler, handleDescriptionInput };
+export { byDescriptionHandler, handleDescriptionInput, truncateTextExact };

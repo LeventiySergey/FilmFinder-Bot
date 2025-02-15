@@ -8,7 +8,6 @@ async function movieHandler(ctx: MyContext) {
   }
   const encodedMovieName = ctx.match[0].split("_")[1];
   const movieName = decodeURIComponent(encodedMovieName).slice(0, -1);
-  console.log(movieName);
   console.log(`User ${ctx.from?.username || ctx.from?.id} selected movie: ${movieName}`);
   await ctx.answerCallbackQuery();
   await new Promise(resolve => setTimeout(resolve, 500)); // Add a 500 ms delay
