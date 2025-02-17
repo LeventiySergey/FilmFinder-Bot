@@ -7,7 +7,15 @@ async function movieHandler(ctx: MyContext) {
     return;
   }
   const encodedMovieName = ctx.match[0].split("_")[1];
-  const movieName = decodeURIComponent(encodedMovieName).slice(0, -1);
+  let movieName = decodeURIComponent(encodedMovieName);
+  const wrongName = movieName;
+  if(movieName[movieName.length-1] === "…") {
+    movieName = movieName.slice(0, -1);
+  }
+  if(movieName[movieName.length-1] === "." || 
+    movieName[movieName.length-1] === ",") {
+    movieName = movieName.slice(0, -1);
+  }
   console.log(`User ${ctx.from?.username || ctx.from?.id} selected movie: ${movieName}`);
   await ctx.answerCallbackQuery();
   await new Promise(resolve => setTimeout(resolve, 500)); // Add a 500 ms delay
@@ -30,7 +38,7 @@ async function movieHandler(ctx: MyContext) {
     const inlineKeyboard = {
       inline_keyboard: [
         [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-        [{ text: "Find similar", callback_data: `similar_${encodedMovieName}` }]
+        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(wrongName).slice(0, 100)}` }] // Ensure callback data is within 64 bytes
       ],
     };
 

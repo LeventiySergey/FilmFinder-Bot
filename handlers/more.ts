@@ -1,5 +1,5 @@
 import { MyContext } from "../types.ts";
-import { getMovieDetails, getMovieDetailsById } from "../api/tmdbApi.ts";
+import { getMovieDetailsById } from "../api/tmdbApi.ts";
 import {truncateTextExact} from "./byDescription.ts";
 
 function truncateText(text: string, maxLength: number): string {
@@ -9,9 +9,9 @@ function truncateText(text: string, maxLength: number): string {
   const truncated = text.substring(0, maxLength);
   const lastSpaceIndex = truncated.lastIndexOf(" ");
   if (lastSpaceIndex === -1) {
-    return truncated + "...";
+    return truncated + "…";
   }
-  return truncated.substring(0, lastSpaceIndex) + "...";
+  return truncated.substring(0, lastSpaceIndex) + "…";
 }
 
 async function moreHandler(ctx: MyContext) {

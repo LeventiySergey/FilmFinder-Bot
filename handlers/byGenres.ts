@@ -53,7 +53,7 @@ async function handleGenresInput(ctx: MyContext) {
         const keyboard = new InlineKeyboard();
 
         movieTitles.forEach((title) => {
-          const truncatedTitle = truncateTextExact(title, 30); // Use new truncate function
+          const truncatedTitle = truncateTextExact(title, 33); // Use new truncate function
           const encodedTitle = encodeURIComponent(truncatedTitle);
           keyboard.text(truncatedTitle, `movie_${encodedTitle}`).row();
         });
