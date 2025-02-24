@@ -67,7 +67,8 @@ async function findSimilarHandler(ctx: MyContext) {
       const inlineKeyboard = {
         inline_keyboard: [
           [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-          [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }]
+          [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
+          [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
         ],
       };
 
