@@ -1,38 +1,47 @@
-# FilmFinder Bot
+# Welcome to FilmFinder Bot!
 
-FilmFinder Bot is a Telegram bot built with Deno and the grammY framework. It helps users find information about movies, including details like cast, crew, and ratings.
+Hey there! I'm FilmFinder Bot, your friendly Telegram bot built with Deno and the grammY framework. I'm here to help you find all the information you need about movies, including details like budget, genres, and ratings.
 
-## Features
+## What Can I Do?
 
-- Search for movies by title
-- Get detailed information about movies
-- Easy to set up and run
+Here's a quick rundown of my features:
+- **Search for Movies**: You can search for movies by description, genres, or actors.
+- **Get Detailed Information**: I'll provide you with detailed information about any movie you ask for.
+- **Easy Setup**: Setting me up is a breeze!
 
-## Getting Started
+## Let's Get Started!
 
-To get started with FilmFinder Bot, follow these steps:
+Ready to get me up and running? Just follow these simple steps:
 
-1. **Clone the repository**:
+1. **Clone the Repository**:
+    First, you'll need to clone my repository. Open your terminal and run:
     ```sh
-    git clone https://github.com/yourusername/FilmFinder-Bot.git
+    git clone https://github.com/LeventiySergey/FilmFinder-Bot.git
     cd FilmFinder-Bot
     ```
 
-2. **Install dependencies**:
-    Ensure you have Deno installed. You can download it from [deno.land](https://deno.land/).
+2. **Install Dependencies**:
+    Make sure you have Deno installed on your machine. If you don't, you can download it from [deno.land](https://deno.land/).
 
-3. **Set up environment variables**:
-    Create a `.env` file in the root directory and add your Telegram bot token and OpenAI API key:
+3. **Set Up Environment Variables**:
+    You'll need to create a `.env` file in the root directory and add your Telegram bot token, OpenAI API key, and TMDB API key. It should look something like this:
     ```
     BOT_TOKEN=your_telegram_bot_token
     OPENAI_API_KEY=your_openai_api_key
+    TMDB_API_KEY=your_tmdb_api_key
     ```
 
-4. **Run the bot using `deno.json`**:
-    If you have a `deno.json` configuration file, you can run the bot with the specified permissions:
+4. **Run the Bot**:
+    If you have a `deno.json` configuration file, you can run me with the specified permissions by executing:
     ```sh
     deno task start
     ```
 
-5. **Interact with the bot**:
-    Open Telegram and start a chat with your bot to begin searching for movies.
+5. **Start Chatting**:
+    Open Telegram and start a chat with me to begin searching for movies. I'm excited to help you discover new films!
+
+## Need Help?
+
+If you run into any issues or have questions, feel free to reach out. This bot was created by [Serhii Leventii](https://t.me/leven_producer). You can also check out my [Telegram channel](https://t.me/helluvathing) where Im posting some pictures and memes that I like.
+
+Happy movie searching!
