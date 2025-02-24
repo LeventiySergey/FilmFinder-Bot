@@ -1,5 +1,6 @@
 import { MyContext } from "../types.ts";
 import { getMovieDetails } from "../api/tmdbApi.ts";
+import { truncateTextExact } from "./byDescription.ts";
 
 async function movieHandler(ctx: MyContext) {
   if (!ctx.match) {
@@ -8,7 +9,6 @@ async function movieHandler(ctx: MyContext) {
   }
   const encodedMovieName = ctx.match[0].split("_")[1];
   let movieName = decodeURIComponent(encodedMovieName);
-  const wrongName = movieName;
   if(movieName[movieName.length-1] === "…") {
     movieName = movieName.slice(0, -1);
   }
@@ -23,6 +23,7 @@ async function movieHandler(ctx: MyContext) {
   try {
     const movieDetails = await getMovieDetails(movieName);
     const title = movieDetails.title || "Title not available";
+    const truncatedTitle = truncateTextExact(title, 30);
     const tagline = movieDetails.tagline || "Tagline not available";
     const genres = movieDetails.genres.map((genre: { name: string }) => genre.name).join(", ") || "Genres not available";
     const releaseYear = movieDetails.release_date ? movieDetails.release_date.split("-")[0] : "Year not available";
@@ -38,7 +39,8 @@ async function movieHandler(ctx: MyContext) {
     const inlineKeyboard = {
       inline_keyboard: [
         [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(wrongName).slice(0, 100)}` }] // Ensure callback data is within 64 bytes
+        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
+        [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
       ],
     };
 

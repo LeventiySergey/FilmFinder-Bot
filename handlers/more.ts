@@ -43,7 +43,8 @@ async function moreHandler(ctx: MyContext) {
 
     const inlineKeyboard = {
       inline_keyboard: [
-        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }]
+        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
+        [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
       ],
     };
 
