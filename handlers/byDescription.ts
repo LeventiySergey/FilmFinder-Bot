@@ -32,6 +32,8 @@ async function handleDescriptionInput(ctx: MyContext) {
       return;
     }
 
+    console.log(`[DESC] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
+
     await ctx.reply("Analyzing your description...");
 
     try {
