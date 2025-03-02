@@ -23,7 +23,7 @@ async function movieHandler(ctx: MyContext) {
   try {
     const movieDetails = await getMovieDetails(movieName);
     const title = movieDetails.title || "Title not available";
-    const truncatedTitle = truncateTextExact(title, 30);
+    const truncatedTitle = truncateTextExact(title, 33);
     const tagline = movieDetails.tagline || "Tagline not available";
     const genres = movieDetails.genres.map((genre: { name: string }) => genre.name).join(", ") || "Genres not available";
     const releaseYear = movieDetails.release_date ? movieDetails.release_date.split("-")[0] : "Year not available";
