@@ -25,6 +25,10 @@ bot.command("start", async (ctx) => {
   });
 });
 
+bot.catch((err) => {
+  console.error("Error in middleware:", err);
+});
+
 bot.callbackQuery(/^movie_.+$/, movieHandler);
 bot.callbackQuery(/^more_\d+$/, moreHandler);
 bot.callbackQuery(/^similar_.+$/, findSimilarHandler);
@@ -32,9 +36,5 @@ bot.callbackQuery(/^favorite_.+$/, addOrRemoveMovieFromDatabase); // Updated han
 bot.callbackQuery(/^favorites_page_.+$/, favoritesPageHandler); // New handler
 
 setupHandlers(bot);
-
-bot.catch((err) => {
-  console.error("Error in middleware:", err);
-});
 
 bot.start();
