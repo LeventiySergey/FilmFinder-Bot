@@ -30,6 +30,8 @@ async function handleGenresInput(ctx: MyContext) {
       return;
     }
 
+    console.log(`[GENRES] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
+
     await ctx.reply("Analyzing your genres list...");
 
     try {
