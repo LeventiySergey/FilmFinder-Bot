@@ -30,10 +30,17 @@ export async function getMovieDetails(title: string): Promise<any> {
       throw new Error("Movie not found.");
     }
 
-    // Assume the first result is the most relevant
-    const movieId = searchData.results[0].id;
+    // Get the top 3 results
+    const topResults = searchData.results.slice(0, 3);
 
-    // Get detailed information about the movie
+    // Find the most popular movie among the top results
+    const mostPopularMovie = topResults.reduce((prev: any, current: any) => {
+      return (prev.popularity > current.popularity) ? prev : current;
+    });
+
+    const movieId = mostPopularMovie.id;
+
+    // Get detailed information about the most popular movie
     const detailsResponse = await fetch(
       `${TMDB_API_URL}/movie/${movieId}?api_key=${API_KEY}`,
       {
@@ -60,12 +67,13 @@ export async function getMovieDetails(title: string): Promise<any> {
 /**
  * Function to get detailed information about a movie by its ID
  * @param movieId - Movie ID
+ * @param language - Language code (optional, default is "en")
  * @returns Detailed information about the movie
  */
-export async function getMovieDetailsById(movieId: string): Promise<any> {
+export async function getMovieDetailsById(movieId: string, language: string = "en"): Promise<any> {
   try {
     const detailsResponse = await fetch(
-      `${TMDB_API_URL}/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits`,
+      `${TMDB_API_URL}/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits&language=${language}`,
       {
         method: "GET",
         headers: {

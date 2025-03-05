@@ -1,7 +1,6 @@
 import { MyContext } from "../types.ts";
 import { getGPTResponse } from "../api/gptApi.ts";
-import { getMovieDetails } from "../api/tmdbApi.ts";
-import { truncateTextExact } from "./byDescription.ts";
+import { getMovieDetails, getMovieDetailsById } from "../api/tmdbApi.ts";
 
 // Interface for GPT response structure
 interface GPTMoviesResponse {
@@ -14,13 +13,10 @@ async function findSimilarHandler(ctx: MyContext) {
     await ctx.reply("Invalid request format.");
     return;
   }
-  const movieName = ctx.match[0].split("_")[1];
-  const decodedMovieName = decodeURIComponent(movieName);
-
-  let message = `⏳ Finding a movie similar to ${decodedMovieName}`;
-  if (decodedMovieName[decodedMovieName.length - 1] === '…') {
-    message = message + ' Oops, I forgot how it goes after that 😅';
-  } 
+  const movieId = ctx.match[0].split("_")[1];
+  const movieDetails = await getMovieDetailsById(movieId)
+  const movieName = movieDetails.title;
+  const message = `I am searching for a movie similar to "${movieName}" just for you.`;
   await ctx.reply(message);
 
   await ctx.answerCallbackQuery();
@@ -29,7 +25,7 @@ async function findSimilarHandler(ctx: MyContext) {
   try {
     // Get response from GPT
     const gptResponse = (await getGPTResponse(
-      `Provide one random (not the most popular) movie (not series) title similar to: '${decodedMovieName}' in JSON format like {"1": "Movie Title"}. Only return the JSON object, no additional text.`
+      `Provide one random (not the most popular) movie (not series) title similar to: '${movieName}' in JSON format like {"1": "Movie Title"}. Only return the JSON object, no additional text.`
     )) as string; // Cast to string
 
     // Parse JSON response
@@ -46,12 +42,11 @@ async function findSimilarHandler(ctx: MyContext) {
 
     // If no movie found
     if (!movieTitle) {
-      await ctx.reply("No similar movie found.");
+      await ctx.reply("I couldn't find a similar movie. Please try again.");
     } else {
       // Get movie details
       const movieDetails = await getMovieDetails(movieTitle);
       const title = movieDetails.title || "Title not available";
-      const truncatedTitle = truncateTextExact(title, 30);
       const tagline = movieDetails.tagline || "Tagline not available";
       const genres = movieDetails.genres.map((genre: { name: string }) => genre.name).join(", ") || "Genres not available";
       const releaseYear = movieDetails.release_date ? movieDetails.release_date.split("-")[0] : "Year not available";
@@ -67,8 +62,8 @@ async function findSimilarHandler(ctx: MyContext) {
       const inlineKeyboard = {
         inline_keyboard: [
           [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-          [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
-          [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
+          [{ text: "Find similar", callback_data: `similar_${movieDetails.id}` }],
+          [{ text: "⭐️ Favorite", callback_data: `favorite_${movieDetails.id}` }],
         ],
       };
 

@@ -1,6 +1,6 @@
 import { MyContext } from "../types.ts";
 import { getMovieDetails } from "../api/tmdbApi.ts";
-import { truncateTextExact } from "./byDescription.ts";
+
 
 async function movieHandler(ctx: MyContext) {
   if (!ctx.match) {
@@ -23,7 +23,6 @@ async function movieHandler(ctx: MyContext) {
   try {
     const movieDetails = await getMovieDetails(movieName);
     const title = movieDetails.title || "Title not available";
-    const truncatedTitle = truncateTextExact(title, 33);
     const tagline = movieDetails.tagline || "Tagline not available";
     const genres = movieDetails.genres.map((genre: { name: string }) => genre.name).join(", ") || "Genres not available";
     const releaseYear = movieDetails.release_date ? movieDetails.release_date.split("-")[0] : "Year not available";
@@ -39,8 +38,8 @@ async function movieHandler(ctx: MyContext) {
     const inlineKeyboard = {
       inline_keyboard: [
         [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
-        [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
+        [{ text: "Find similar", callback_data: `similar_${movieDetails.id}` }],
+        [{ text: "⭐️ Favorite", callback_data: `favorite_${movieDetails.id}`}],
       ],
     };
 

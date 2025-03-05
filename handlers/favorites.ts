@@ -1,6 +1,7 @@
 import { MyContext } from "../types.ts";
 import { getFavoriteMovies } from "../database/database.ts";
 import { InlineKeyboard } from "https://deno.land/x/grammy@v1.33.0/mod.ts";
+import { truncateTextExact } from "./byDescription.ts";
 
 const MOVIES_PER_PAGE = 5;
 
@@ -12,7 +13,8 @@ async function favoritesHandler(ctx: MyContext) {
     return;
   }
 
-  const favoriteMovies = await getFavoriteMovies(userId);
+  let favoriteMovies = await getFavoriteMovies(userId);
+  favoriteMovies = favoriteMovies.map(movie => truncateTextExact(movie, 33));
 
   if (favoriteMovies.length === 0) {
     await ctx.reply("You have no favorite movies yet.");
@@ -71,8 +73,9 @@ async function favoritesPageHandler(ctx: MyContext) {
   }
 
   const favoriteMovies = await getFavoriteMovies(userId);
+  const truncatedMovies = favoriteMovies.map(movie => truncateTextExact(movie, 33));
 
-  await sendFavoriteMoviesPage(ctx, favoriteMovies, page);
+  await sendFavoriteMoviesPage(ctx, truncatedMovies, page);
 }
 
 export { favoritesHandler, favoritesPageHandler };

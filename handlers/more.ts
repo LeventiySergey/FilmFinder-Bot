@@ -2,18 +2,6 @@ import { MyContext } from "../types.ts";
 import { getMovieDetailsById } from "../api/tmdbApi.ts";
 import {truncateTextExact} from "./byDescription.ts";
 
-function truncateText(text: string, maxLength: number): string {
-  if (text.length <= maxLength) {
-    return text;
-  }
-  const truncated = text.substring(0, maxLength);
-  const lastSpaceIndex = truncated.lastIndexOf(" ");
-  if (lastSpaceIndex === -1) {
-    return truncated + "…";
-  }
-  return truncated.substring(0, lastSpaceIndex) + "…";
-}
-
 async function moreHandler(ctx: MyContext) {
   const movieId = ctx.match ? ctx.match[0].split("_")[1] : null;
   if (!movieId) {
@@ -24,11 +12,10 @@ async function moreHandler(ctx: MyContext) {
   await new Promise(resolve => setTimeout(resolve, 500)); // Add a 500 ms delay
 
   try {
-    const movieDetails = await getMovieDetailsById(movieId);
+    const movieDetails = await getMovieDetailsById(movieId, "uk");
     console.log(`User ${ctx.from?.username || ctx.from?.id} requested more details for movie: ${movieDetails.title}`);
     const budget = movieDetails.budget ? `$${movieDetails.budget.toLocaleString()}` : "Budget not available";
-    const description = movieDetails.overview ? truncateText(movieDetails.overview, 500) : "Description not available";
-    const truncatedTitle = truncateTextExact(movieDetails.title, 30); // Use new truncate function
+    const description = movieDetails.overview ? truncateTextExact(movieDetails.overview, 500) : "Description not available"; 
     interface CrewMember {
       job: string;
       name: string;
@@ -43,8 +30,8 @@ async function moreHandler(ctx: MyContext) {
 
     const inlineKeyboard = {
       inline_keyboard: [
-        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
-        [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
+        [{ text: "Find similar", callback_data: `similar_${movieDetails.id}` }],
+        [{ text: "⭐️ Favorite", callback_data: `favorite_${movieDetails.id}`}]
       ],
     };
 
@@ -63,4 +50,4 @@ async function moreHandler(ctx: MyContext) {
   }
 }
 
-export { moreHandler, truncateText };
+export { moreHandler };
