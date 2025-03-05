@@ -5,7 +5,7 @@ async function goBackHandler(ctx: MyContext) {
   ctx.session.waitingForDescription = false;
   ctx.session.waitingForActors = false;
   ctx.session.waitingForGenres = false;
-  await ctx.reply("Welcome! Choose an action:", {
+  await ctx.reply("What would you like to do today? Choose an option below:", {
     reply_markup: { keyboard: mainKeyboard.build(), resize_keyboard: true },
   });
 }

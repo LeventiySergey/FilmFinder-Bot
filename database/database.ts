@@ -1,5 +1,6 @@
 import { MongoClient } from "npm:mongodb@5.6.0";
 import { MyContext } from "../types.ts";
+import { getMovieDetailsById } from "../api/tmdbApi.ts";
 
 const client = new MongoClient("mongodb://localhost:27017");
 
@@ -18,7 +19,9 @@ export async function addOrRemoveMovieFromDatabase(ctx: MyContext) {
     await ctx.reply("Invalid request format.");
     return;
   }
-  const movieName = decodeURIComponent(data[1]);
+  const movieId = data[1];
+  const movieDetails = await getMovieDetailsById(movieId);
+  const movieName = movieDetails.title;
   const userId = ctx.from?.id;
 
   if (!userId) {
@@ -30,10 +33,10 @@ export async function addOrRemoveMovieFromDatabase(ctx: MyContext) {
     const existingFavorite = await usersCollection.findOne({ userId, movieName });
     if (existingFavorite) {
       await usersCollection.deleteOne({ userId, movieName });
-      await ctx.reply(`Removed this movie from your favorites.`);
-    } else {
+      await ctx.reply(`"${movieName}" has been removed from your favorites. Hope it wasn't a tough decision!`);
+        } else {
       await usersCollection.insertOne({ userId, movieName });
-      await ctx.reply(`Added this movie to your favorites.`);
+      await ctx.reply(`"${movieName}" has been added to your favorites. Enjoy your movie time!`);
     }
   } catch (error) {
     console.error("Error updating favorites:", error);

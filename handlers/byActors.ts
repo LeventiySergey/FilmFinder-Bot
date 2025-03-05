@@ -17,7 +17,7 @@ async function byActorsHandler(ctx: MyContext) {
   ctx.session.waitingForActors = true;
   ctx.session.waitingForGenres = false;
   ctx.session.waitingForDescription = false;
-  await ctx.reply("Please provide names of actors (example - Tom Hanks, Brad Pitt, etc.):");
+  await ctx.reply("Great! Please provide the names of actors you're interested in (e.g., Tom Hanks, Brad Pitt, etc.):");
 }
 
 // Handler to process actors input
@@ -26,13 +26,13 @@ async function handleActorsInput(ctx: MyContext) {
     const userMessage = ctx.message?.text;
 
     if (!userMessage) {
-      await ctx.reply("Please provide a valid input.");
+      await ctx.reply("It seems like you didn't provide any actor names. Please try again.");
       return;
     }
 
     console.log(`[ACTORS] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
 
-    await ctx.reply("Analyzing your actors list...");
+    await ctx.reply("Got it! Analyzing your actors list...");
 
     try {
       // Get response from GPT
@@ -49,7 +49,7 @@ async function handleActorsInput(ctx: MyContext) {
 
       // If no movies found
       if (movieTitles.length === 0) {
-        await ctx.reply("No valid actors found in the input.");
+        await ctx.reply("Hmm, I couldn't find any movies based on those actors. Please try again with different names.");
       } else {
         // Generate keyboard
         const keyboard = new InlineKeyboard();
@@ -61,11 +61,11 @@ async function handleActorsInput(ctx: MyContext) {
         });
 
         // Send message with keyboard
-        await ctx.reply(`Movies found:`, { reply_markup: keyboard });
+        await ctx.reply(`Here are some movies you might like:`, { reply_markup: keyboard });
       }
     } catch (error) {
       console.error("Error communicating with GPT API:", error);
-      await ctx.reply("Sorry, there was an error processing your request.");
+      await ctx.reply("Sorry, something went wrong while processing your request. Please try again later.");
     }
 
     ctx.session.waitingForActors = false;

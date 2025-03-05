@@ -17,7 +17,7 @@ async function byGenresHandler(ctx: MyContext) {
   ctx.session.waitingForGenres = true;
   ctx.session.waitingForDescription = false;
   ctx.session.waitingForActors = false;
-  await ctx.reply("Please provide genres (example - drama, comedy, etc.):");
+  await ctx.reply("Great! Please tell me the genres you're interested in (e.g., drama, comedy, etc.):");
 }
 
 // Handler to process genre input
@@ -26,13 +26,13 @@ async function handleGenresInput(ctx: MyContext) {
     const userMessage = ctx.message?.text;
 
     if (!userMessage) {
-      await ctx.reply("Please provide a valid input.");
+      await ctx.reply("Oops! It looks like you didn't provide any genres. Please try again.");
       return;
     }
 
     console.log(`[GENRES] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
 
-    await ctx.reply("Analyzing your genres list...");
+    await ctx.reply("Got it! I'm analyzing your genres list...");
 
     try {
       // Get response from GPT
@@ -49,7 +49,7 @@ async function handleGenresInput(ctx: MyContext) {
 
       // If no movies found
       if (movieTitles.length === 0) {
-        await ctx.reply("No valid genres found in the input.");
+        await ctx.reply("Hmm, I couldn't find any movies based on those genres. Please try again with different genres.");
       } else {
         // Generate keyboard
         const keyboard = new InlineKeyboard();
@@ -61,7 +61,7 @@ async function handleGenresInput(ctx: MyContext) {
         });
 
         // Send message with keyboard
-        await ctx.reply(`Movies found:`, { reply_markup: keyboard });
+        await ctx.reply(`Here are some movies you might like:`, { reply_markup: keyboard });
       }
     } catch (error) {
       console.error("Error communicating with GPT API:", error);

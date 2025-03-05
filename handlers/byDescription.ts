@@ -2,7 +2,7 @@ import { MyContext } from "../types.ts";
 import { getGPTResponse } from "../api/gptApi.ts";
 import { InlineKeyboard } from "https://deno.land/x/grammy@v1.33.0/mod.ts";
 
-// Интерфейс для структуры ответа GPT
+// Interface for GPT response structure
 interface GPTMoviesResponse {
   [key: string]: string;
 }
@@ -12,32 +12,32 @@ function truncateTextExact(text: string, maxLength: number): string {
   return text.length > maxLength ? text.substring(0, maxLength) + "…" : text;
 }
 
-// Хэндлер для начала взаимодействия
+// Handler to start interaction
 async function byDescriptionHandler(ctx: MyContext) {
   ctx.session.waitingForDescription = true;
   ctx.session.waitingForGenres = false;
   ctx.session.waitingForActors = false;
   await ctx.reply(
-    "Please provide the movie description (example - Funny, sad and lifechanging, etc.):"
+    "Awesome! Please provide the movie description (e.g., funny, sad, life-changing, etc.):"
   );
 }
 
-// Хэндлер для обработки введенного описания
+// Handler to process description input
 async function handleDescriptionInput(ctx: MyContext) {
   if (ctx.session.waitingForDescription) {
     const userMessage = ctx.message?.text;
 
     if (!userMessage) {
-      await ctx.reply("Please provide a valid input.");
+      await ctx.reply("It seems like you didn't provide a description. Please try again.");
       return;
     }
 
     console.log(`[DESC] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
 
-    await ctx.reply("Analyzing your description...");
+    await ctx.reply("Got it! Analyzing your description...");
 
     try {
-      // Получение ответа от GPT
+      // Get response from GPT
       const gptResponse = (await getGPTResponse(
         `You have to provide movies (not series) list (just english titles, in json format but without '''json, example - '{
           "1": "Fight Club",
@@ -47,17 +47,17 @@ async function handleDescriptionInput(ctx: MyContext) {
           "5": "Ocean's Eleven"
         }', max - 5) by description: '${userMessage}'. 
         YOU HAVE TO REMEMBER: If you think it's invalid or inappropriate description just send {}.`
-      )) as string; // Приводим к типу string
+      )) as string; // Cast to string
 
-      // Парсим JSON-ответ
+      // Parse JSON response
       const movies: GPTMoviesResponse = JSON.parse(gptResponse);
       const movieTitles = Object.values(movies);
 
-      // Если фильмов нет
+      // If no movies found
       if (movieTitles.length === 0) {
-        await ctx.reply("No valid description found in the input.");
+        await ctx.reply("Hmm, I couldn't find any movies based on that description. Please try again with a different description.");
       } else {
-        // Генерация клавиатуры
+        // Generate keyboard
         const keyboard = new InlineKeyboard();
         
         movieTitles.forEach((title) => {
@@ -66,17 +66,17 @@ async function handleDescriptionInput(ctx: MyContext) {
           keyboard.text(truncatedTitle, `movie_${encodedTitle}`).row();
         });
 
-        // Отправка сообщения с клавиатурой
-        await ctx.reply(`Movies found:`, { reply_markup: keyboard });
+        // Send message with keyboard
+        await ctx.reply(`Here are some movies you might like:`, { reply_markup: keyboard });
       }
     } catch (error) {
       console.error("Error communicating with GPT API:", error);
-      await ctx.reply("Sorry, there was an error processing your request.");
+      await ctx.reply("Sorry, something went wrong while processing your request. Please try again later.");
     }
 
     ctx.session.waitingForDescription = false;
   }
 }
 
-// Экспортируем хэндлеры
+// Export handlers
 export { byDescriptionHandler, handleDescriptionInput, truncateTextExact };

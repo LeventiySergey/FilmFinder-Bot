@@ -1,5 +1,5 @@
 import { Bot, session } from "https://deno.land/x/grammy@v1.33.0/mod.ts";
-import { MyContext, MySession } from "./types.ts"; // Импортируем тип контекста
+import { MyContext, MySession } from "./types.ts"; // Import context type
 import { mainKeyboard } from "./keyboards.ts";
 import { setupHandlers } from "./handlers/index.ts";
 import { movieHandler } from "./handlers/movie.ts";
@@ -20,7 +20,7 @@ bot.use(session({
 
 bot.command("start", async (ctx) => {
   console.log(`User ${ctx.from?.username || ctx.from?.id} started the bot`);
-  await ctx.reply("Welcome! Choose an action:", {
+  await ctx.reply("Welcome to Film Finder AI! 🎬 What would you like to do today? Choose an option below:", {
     reply_markup: { keyboard: mainKeyboard.build(), resize_keyboard: true },
   });
 });
