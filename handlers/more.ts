@@ -45,6 +45,7 @@ async function moreHandler(ctx: MyContext) {
       inline_keyboard: [
         [{ text: "🔍 Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
         [{ text: "⭐ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}],
+        [{ text: "🎥 Preview", callback_data: `preview_${movieDetails.id}` }], // Added Preview button
         [{ text: "❌ Hide", callback_data: `hide_message` }],
       ],
     };
