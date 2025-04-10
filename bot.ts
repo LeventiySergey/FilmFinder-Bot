@@ -7,6 +7,7 @@ import { moreHandler } from "./handlers/more.ts";
 import { findSimilarHandler } from "./handlers/findSimilar.ts";
 import { addOrRemoveMovieFromDatabase } from "./database/database.ts"; // Updated import
 import { favoritesPageHandler } from "./handlers/favorites.ts"; // New import
+import { hideMessageHandler } from "./handlers/hideMessage.ts"; // New import
 
 const bot = new Bot<MyContext>(Deno.env.get("BOT_TOKEN")!);
 
@@ -34,6 +35,7 @@ bot.callbackQuery(/^more_\d+$/, moreHandler);
 bot.callbackQuery(/^similar_.+$/, findSimilarHandler);
 bot.callbackQuery(/^favorite_.+$/, addOrRemoveMovieFromDatabase); // Updated handler
 bot.callbackQuery(/^favorites_page_.+$/, favoritesPageHandler); // New handler
+bot.callbackQuery(/^hide_message$/, hideMessageHandler); // Add handler for 'Hide' button
 
 setupHandlers(bot);
 
