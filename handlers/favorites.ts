@@ -15,7 +15,7 @@ async function favoritesHandler(ctx: MyContext) {
   const favoriteMovies = await getFavoriteMovies(userId);
 
   if (favoriteMovies.length === 0) {
-    await ctx.reply("You have no favorite movies yet.");
+    await ctx.reply("🎥 You don't have any favorite movies yet. Start adding some to build your list! 😊");
   } else {
     await sendFavoriteMoviesPage(ctx, favoriteMovies, 1);
   }

@@ -4,7 +4,7 @@ import { truncateTextExact } from "./byDescription.ts";
 
 async function movieHandler(ctx: MyContext) {
   if (!ctx.match) {
-    await ctx.reply("Sorry, something went wrong. Please try again.");
+    await ctx.reply("Oops! Something went wrong. Please try again later. 🙁");
     return;
   }
   const encodedMovieName = ctx.match[0].split("_")[1];
@@ -38,9 +38,11 @@ async function movieHandler(ctx: MyContext) {
 
     const inlineKeyboard = {
       inline_keyboard: [
-        [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-        [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
-        [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
+        [{ text: "✨ More details", callback_data: `more_${movieDetails.id}` }],
+        [{ text: "🔍 Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
+        [{ text: "⭐ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}],
+        [{ text: "🎥 Preview", callback_data: `preview_${movieDetails.id}` }], // Added Preview button
+        [{ text: "❌ Hide", callback_data: `hide_message` }],
       ],
     };
 

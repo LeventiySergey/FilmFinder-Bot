@@ -32,7 +32,7 @@ async function handleGenresInput(ctx: MyContext) {
 
     console.log(`[GENRES] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
 
-    await ctx.reply("Analyzing your genres list...");
+    await ctx.reply("🎭 Got it! Analyzing your genres list to find the best matches for you. Hang tight! 😊");
 
     try {
       // Get response from GPT

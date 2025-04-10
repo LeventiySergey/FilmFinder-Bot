@@ -16,7 +16,7 @@ export async function getGPTResponse(prompt: string): Promise<string> {
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o", // або "gpt-4", якщо доступно
+        model: "gpt-4o-mini", // або "gpt-4", якщо доступно
         messages: [{ role: "user", content: prompt }],
         max_tokens: 200, // Обмеження токенів у відповіді
       }),

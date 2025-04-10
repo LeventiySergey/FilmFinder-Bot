@@ -6,7 +6,7 @@ import { truncateTextExact } from "./byDescription.ts";
 
 async function recommendationsHandler(ctx: MyContext) {
   const userId = ctx.from?.id;
-  await ctx.reply("Analyzing your favorite movies... Please wait.");
+  await ctx.reply("🌟 Hang tight! We're analyzing your favorite movies to find the best recommendations for you...");
 
   if (!userId) {
     await ctx.reply("User ID not found.");

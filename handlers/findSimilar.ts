@@ -17,10 +17,10 @@ async function findSimilarHandler(ctx: MyContext) {
   const movieName = ctx.match[0].split("_")[1];
   const decodedMovieName = decodeURIComponent(movieName);
 
-  let message = `⏳ Finding a movie similar to ${decodedMovieName}`;
+  let message = `⏳ Hang tight! We're finding a movie similar to '${decodedMovieName}' for you. 🎥`;
   if (decodedMovieName[decodedMovieName.length - 1] === '…') {
-    message = message + ' Oops, I forgot how it goes after that 😅';
-  } 
+    message += ' Oops, I forgot how it goes after that 😅';
+  }
   await ctx.reply(message);
 
   await ctx.answerCallbackQuery();
@@ -66,9 +66,11 @@ async function findSimilarHandler(ctx: MyContext) {
 
       const inlineKeyboard = {
         inline_keyboard: [
-          [{ text: "More details", callback_data: `more_${movieDetails.id}` }],
-          [{ text: "Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
-          [{ text: "⭐️ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}]
+          [{ text: "✨ More details", callback_data: `more_${movieDetails.id}` }],
+          [{ text: "🔍 Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
+          [{ text: "⭐ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}],
+          [{ text: "🎥 Preview", callback_data: `preview_${movieDetails.id}` }], // Added Preview button
+          [{ text: "❌ Hide", callback_data: `hide_message` }],
         ],
       };
 
