@@ -4,7 +4,7 @@ import { truncateTextExact } from "./byDescription.ts";
 
 async function movieHandler(ctx: MyContext) {
   if (!ctx.match) {
-    await ctx.reply("Sorry, something went wrong. Please try again.");
+    await ctx.reply("Oops! Something went wrong. Please try again later. 🙁");
     return;
   }
   const encodedMovieName = ctx.match[0].split("_")[1];

@@ -32,7 +32,7 @@ async function handleActorsInput(ctx: MyContext) {
 
     console.log(`[ACTORS] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
 
-    await ctx.reply("Analyzing your actors list...");
+    await ctx.reply("🎭 Got it! Analyzing your actors list to find the best matches for you. Hang tight! 😊");
 
     try {
       // Get response from GPT

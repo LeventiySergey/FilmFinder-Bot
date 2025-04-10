@@ -34,7 +34,7 @@ async function handleDescriptionInput(ctx: MyContext) {
 
     console.log(`[DESC] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
 
-    await ctx.reply("Analyzing your description...");
+    await ctx.reply("📖 Got it! Analyzing your description to find the best matches for you. Hang tight! 😊");
 
     try {
       // Получение ответа от GPT

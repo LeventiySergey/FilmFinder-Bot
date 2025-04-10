@@ -1,9 +1,8 @@
-
 import { Context } from "https://deno.land/x/grammy@v1.33.0/mod.ts";
 
 async function aboutBotHandler(ctx: Context) {
   await ctx.reply(
-    "This bot helps you find movies, provides personal recommendations, and manages your 'Favorites' list.",
+    "🤖 Hi there! I'm your friendly movie assistant. I can help you find movies, give recommendations, and manage your favorites list. Let's explore some great films together! 🎥",
   );
 }
 

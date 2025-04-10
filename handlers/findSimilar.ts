@@ -17,10 +17,10 @@ async function findSimilarHandler(ctx: MyContext) {
   const movieName = ctx.match[0].split("_")[1];
   const decodedMovieName = decodeURIComponent(movieName);
 
-  let message = `⏳ Finding a movie similar to ${decodedMovieName}`;
+  let message = `⏳ Hang tight! We're finding a movie similar to '${decodedMovieName}' for you. 🎥`;
   if (decodedMovieName[decodedMovieName.length - 1] === '…') {
-    message = message + ' Oops, I forgot how it goes after that 😅';
-  } 
+    message += ' Oops, I forgot how it goes after that 😅';
+  }
   await ctx.reply(message);
 
   await ctx.answerCallbackQuery();

@@ -60,7 +60,7 @@ async function moreHandler(ctx: MyContext) {
     }
   } catch (error) {
     console.error("Error fetching additional movie details:", error);
-    await ctx.reply("Sorry, we couldn't retrieve additional movie information at the moment. Please check back later.");
+    await ctx.reply("Sorry, we couldn't fetch more details about this movie right now. Please try again later. 🙏");
   }
 }
 
