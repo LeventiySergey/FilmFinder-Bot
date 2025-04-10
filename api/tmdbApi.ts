@@ -30,8 +30,13 @@ export async function getMovieDetails(title: string): Promise<any> {
       throw new Error("Movie not found.");
     }
 
-    // Assume the first result is the most relevant
-    const movieId = searchData.results[0].id;
+    // Check the top 3 results and select the most popular one
+    const topResults = searchData.results.slice(0, 3);
+    const mostPopularMovie = topResults.reduce((prev: { popularity: number }, current: { popularity: number }) => {
+      return (prev.popularity > current.popularity) ? prev : current;
+    });
+
+    const movieId = mostPopularMovie.id;
 
     // Get detailed information about the movie
     const detailsResponse = await fetch(

@@ -1,5 +1,7 @@
 import { MongoClient } from "npm:mongodb@5.6.0";
 import { MyContext } from "../types.ts";
+import { getMovieDetailsById } from "../api/tmdbApi.ts";
+import { truncateTextExact } from "../handlers/byDescription.ts";
 
 const client = new MongoClient("mongodb://localhost:27017");
 
@@ -18,7 +20,9 @@ export async function addOrRemoveMovieFromDatabase(ctx: MyContext) {
     await ctx.reply("Invalid request format.");
     return;
   }
-  const movieName = decodeURIComponent(data[1]);
+  const movieId = decodeURIComponent(data[1]);
+  const movieDetails = await getMovieDetailsById(movieId);
+  const movieName = truncateTextExact(movieDetails.title, 33);
   const userId = ctx.from?.id;
 
   if (!userId) {
