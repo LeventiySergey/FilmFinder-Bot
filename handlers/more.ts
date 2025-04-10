@@ -1,6 +1,5 @@
 import { MyContext } from "../types.ts";
 import { getMovieDetailsById } from "../api/tmdbApi.ts";
-import {truncateTextExact} from "./byDescription.ts";
 
 function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) {
@@ -28,7 +27,6 @@ async function moreHandler(ctx: MyContext) {
     console.log(`User ${ctx.from?.username || ctx.from?.id} requested more details for movie: ${movieDetails.title}`);
     const budget = movieDetails.budget ? `$${movieDetails.budget.toLocaleString()}` : "Budget not available";
     const description = movieDetails.overview ? truncateText(movieDetails.overview, 500) : "Description not available";
-    const truncatedTitle = truncateTextExact(movieDetails.title, 30); // Use new truncate function
     interface CrewMember {
       job: string;
       name: string;
@@ -43,8 +41,8 @@ async function moreHandler(ctx: MyContext) {
 
     const inlineKeyboard = {
       inline_keyboard: [
-        [{ text: "🔍 Find similar", callback_data: `similar_${encodeURIComponent(truncatedTitle)}` }],
-        [{ text: "⭐ Favorite", callback_data: `favorite_${encodeURIComponent(truncatedTitle)}`}],
+        [{ text: "🔍 Find similar", callback_data: `similar_${movieDetails.id}` }],
+        [{ text: "⭐ Favorite", callback_data: `favorite_${movieDetails.id}` }],
         [{ text: "🎥 Preview", callback_data: `preview_${movieDetails.id}` }], // Added Preview button
         [{ text: "❌ Hide", callback_data: `hide_message` }],
       ],
