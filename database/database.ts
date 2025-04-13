@@ -12,7 +12,36 @@ async function connectToDatabase() {
 }
 
 const db = await connectToDatabase();
-export const usersCollection = db.collection("favorites");
+export const favoritesCollection = db.collection("favorites");
+export const usersCollection = db.collection("users");
+
+export async function ensureUserExists(ctx: MyContext) {
+  const userId = ctx.from?.id;
+  const username = ctx.from?.username || "undefined username";
+  const nickname = ctx.from?.first_name || "undefined nickname";
+  const language = ctx.from?.language_code || "unknown";
+
+  if (!userId) {
+    console.error("User ID not found in context.");
+    return;
+  }
+
+  try {
+    const existingUser = await usersCollection.findOne({ userId });
+    if (!existingUser) {
+      await usersCollection.insertOne({
+        userId,
+        username,
+        nickname,
+        createdAt: new Date(),
+        language,
+      });
+      console.log(`New user added: ${userId}`);
+    }
+  } catch (error) {
+    console.error("Error ensuring user exists:", error);
+  }
+}
 
 export async function addOrRemoveMovieFromDatabase(ctx: MyContext) {
   const data = ctx.match ? ctx.match[0].split("_") : null;
@@ -31,12 +60,12 @@ export async function addOrRemoveMovieFromDatabase(ctx: MyContext) {
   }
 
   try {
-    const existingFavorite = await usersCollection.findOne({ userId, movieName });
+    const existingFavorite = await favoritesCollection.findOne({ userId, movieName });
     if (existingFavorite) {
-      await usersCollection.deleteOne({ userId, movieName });
+      await favoritesCollection.deleteOne({ userId, movieName });
       await ctx.reply(`Removed this movie from your favorites.`);
     } else {
-      await usersCollection.insertOne({ userId, movieName });
+      await favoritesCollection.insertOne({ userId, movieName });
       await ctx.reply(`Added this movie to your favorites.`);
     }
   } catch (error) {
@@ -47,7 +76,7 @@ export async function addOrRemoveMovieFromDatabase(ctx: MyContext) {
 
 export async function getFavoriteMovies(userId: number) {
   try {
-    const favorites = await usersCollection.find({ userId }).toArray();
+    const favorites = await favoritesCollection.find({ userId }).toArray();
     return favorites.map(favorite => favorite.movieName);
   } catch (error) {
     console.error("Error fetching favorite movies:", error);
