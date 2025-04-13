@@ -5,7 +5,7 @@ import { setupHandlers } from "./handlers/index.ts";
 import { movieHandler } from "./handlers/movie.ts";
 import { moreHandler } from "./handlers/more.ts";
 import { findSimilarHandler } from "./handlers/findSimilar.ts";
-import { addOrRemoveMovieFromDatabase } from "./database/database.ts"; // Updated import
+import { addOrRemoveMovieFromDatabase, ensureUserExists } from "./database/database.ts"; // Updated import
 import { favoritesPageHandler } from "./handlers/favorites.ts"; // New import
 import { hideMessageHandler } from "./handlers/hideMessage.ts"; // New import
 import { previewHandler } from "./handlers/frames.ts"; // Import the new handler
@@ -19,6 +19,11 @@ bot.use(session({
     waitingForGenres: false, 
   }),
 }));
+
+bot.use(async (ctx, next) => {
+  await ensureUserExists(ctx); // Ensure the user exists in the database
+  await next(); // Proceed to the next middleware or handler
+});
 
 bot.command("start", async (ctx) => {
   console.log(`User ${ctx.from?.username || ctx.from?.id} started the bot`);
