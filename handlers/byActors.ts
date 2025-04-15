@@ -1,6 +1,7 @@
 import { MyContext } from "../types.ts";
 import { getGPTResponse } from "../api/gptApi.ts";
 import { InlineKeyboard } from "https://deno.land/x/grammy@v1.33.0/mod.ts";
+import { checkAndUpdateSearchLimit, getRemainingSearches } from "../database/database.ts";
 
 // Interface for GPT response structure
 interface GPTMoviesResponse {
@@ -14,15 +15,30 @@ function truncateTextExact(text: string, maxLength: number): string {
 
 // Handler to start interaction
 async function byActorsHandler(ctx: MyContext) {
+  const remainingSearches = await getRemainingSearches(ctx);
+  
+  if (remainingSearches === 0) {
+    await ctx.reply("⚠️ You've reached your daily search limit (5 searches per day). Please try again tomorrow!");
+    return;
+  }
+
   ctx.session.waitingForActors = true;
   ctx.session.waitingForGenres = false;
   ctx.session.waitingForDescription = false;
-  await ctx.reply("Please provide names of actors (example - Tom Hanks, Brad Pitt, etc.):");
+  await ctx.reply(`Please provide names of actors (example - Tom Hanks, Brad Pitt, etc.):\n\nYou have ${remainingSearches} search${remainingSearches === 1 ? '' : 'es'} remaining today.`);
 }
 
 // Handler to process actors input
 async function handleActorsInput(ctx: MyContext) {
   if (ctx.session.waitingForActors) {
+    // Check search limit
+    const canSearch = await checkAndUpdateSearchLimit(ctx);
+    if (!canSearch) {
+      await ctx.reply("⚠️ You've reached your daily search limit (5 searches per day). Please try again tomorrow!");
+      ctx.session.waitingForActors = false;
+      return;
+    }
+
     const userMessage = ctx.message?.text;
 
     if (!userMessage) {
@@ -30,7 +46,7 @@ async function handleActorsInput(ctx: MyContext) {
       return;
     }
 
-    console.log(`[ACTORS] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage); // Log user input
+    console.log(`[ACTORS] User ${ctx.from?.username || ctx.from?.id}'s input:`, userMessage);
 
     await ctx.reply("🎭 Got it! Analyzing your actors list to find the best matches for you. Hang tight! 😊");
 
@@ -60,8 +76,8 @@ async function handleActorsInput(ctx: MyContext) {
           keyboard.text(truncatedTitle, `movie_${encodedTitle}`).row();
         });
 
-        // Send message with keyboard
-        await ctx.reply(`Movies found:`, { reply_markup: keyboard });
+        const remainingSearches = await getRemainingSearches(ctx);
+        await ctx.reply(`Movies found (${remainingSearches} search${remainingSearches === 1 ? '' : 'es'} remaining today):`, { reply_markup: keyboard });
       }
     } catch (error) {
       console.error("Error communicating with GPT API:", error);

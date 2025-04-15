@@ -24,12 +24,14 @@ Ready to get me up and running? Just follow these simple steps:
     Make sure you have Deno installed on your machine. If you don't, you can download it from [deno.land](https://deno.land/).
 
 3. **Set Up Environment Variables**:
-    You'll need to create a `.env` file in the root directory and add your Telegram bot token, OpenAI API key, and TMDB API key. It should look something like this:
+    You'll need to create a `.env` file in the root directory and add the following variables:
     ```
     BOT_TOKEN=your_telegram_bot_token
     OPENAI_API_KEY=your_openai_api_key
     TMDB_API_KEY=your_tmdb_api_key
+    MONGODB_URL=mongodb://localhost:27017
     ```
+    Note: The MongoDB URL is set to localhost by default, but you can change it to your own MongoDB connection string if needed (e.g., `mongodb://username:password@hostname:port`).
 
 4. **Run the Bot**:
     If you have a `deno.json` configuration file, you can run me with the specified permissions by executing:

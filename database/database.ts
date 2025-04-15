@@ -1,9 +1,10 @@
 import { MongoClient } from "npm:mongodb@5.6.0";
-import { MyContext } from "../types.ts";
+import { MyContext, User } from "../types.ts";
 import { getMovieDetailsById } from "../api/tmdbApi.ts";
 import { truncateTextExact } from "../handlers/byDescription.ts";
 
-const client = new MongoClient("mongodb://localhost:27017");
+const MONGODB_URL = Deno.env.get("MONGODB_URL") || "mongodb://localhost:27017";
+const client = new MongoClient(MONGODB_URL);
 
 async function connectToDatabase() {
   await client.connect();
@@ -13,7 +14,9 @@ async function connectToDatabase() {
 
 const db = await connectToDatabase();
 export const favoritesCollection = db.collection("favorites");
-export const usersCollection = db.collection("users");
+export const usersCollection = db.collection<User>("users");
+
+const SEARCH_LIMIT = 5;
 
 export async function ensureUserExists(ctx: MyContext) {
   const userId = ctx.from?.id;
@@ -35,11 +38,79 @@ export async function ensureUserExists(ctx: MyContext) {
         nickname,
         createdAt: new Date(),
         language,
+        searchCount: 0,
+        lastSearchDate: new Date().toISOString().split('T')[0],
       });
       console.log(`New user added: ${userId}`);
     }
   } catch (error) {
     console.error("Error ensuring user exists:", error);
+  }
+}
+
+export async function checkAndUpdateSearchLimit(ctx: MyContext): Promise<boolean> {
+  const userId = ctx.from?.id;
+  if (!userId) return false;
+
+  try {
+    const user = await usersCollection.findOne({ userId });
+    if (!user) return false;
+
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Reset counter if it's a new day
+    if (user.lastSearchDate !== currentDate) {
+      await usersCollection.updateOne(
+        { userId },
+        { 
+          $set: { 
+            searchCount: 0,
+            lastSearchDate: currentDate
+          }
+        }
+      );
+      user.searchCount = 0;
+    }
+
+    // Check if limit is exceeded
+    if (user.searchCount >= SEARCH_LIMIT) {
+      return false;
+    }
+
+    // Increment search counter
+    await usersCollection.updateOne(
+      { userId },
+      { 
+        $inc: { searchCount: 1 },
+        $set: { lastSearchDate: currentDate }
+      }
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error checking search limit:", error);
+    return false;
+  }
+}
+
+export async function getRemainingSearches(ctx: MyContext): Promise<number> {
+  const userId = ctx.from?.id;
+  if (!userId) return 0;
+
+  try {
+    const user = await usersCollection.findOne({ userId });
+    if (!user) return 0;
+
+    const currentDate = new Date().toISOString().split('T')[0];
+    
+    if (user.lastSearchDate !== currentDate) {
+      return SEARCH_LIMIT;
+    }
+
+    return Math.max(0, SEARCH_LIMIT - user.searchCount);
+  } catch (error) {
+    console.error("Error getting remaining searches:", error);
+    return 0;
   }
 }
 

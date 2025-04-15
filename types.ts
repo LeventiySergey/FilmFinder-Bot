@@ -6,6 +6,16 @@ interface MySession {
   waitingForGenres: boolean;
 }
 
+interface User {
+  userId: number;
+  username: string;
+  nickname: string;
+  createdAt: Date;
+  language: string;
+  searchCount: number;
+  lastSearchDate: string;
+}
+
 type MyContext = Context & SessionFlavor<MySession>;
 
-export type { MyContext, MySession };
+export type { MyContext, MySession, User };
